@@ -1,0 +1,65 @@
+\input{preamble}
+\hyphenation{drop-outs}
+
+% %\numberofauthors{4}
+% \author{
+% Ramakrishna Padmanabhan\footnotemark[1] \,\,\,\,\,
+% Aaron Schulman\footnotemark[2] \,\,\,\,\,
+% Dave Levin\footnotemark[1] \,\,\,\,\,
+% Neil Spring\footnotemark[1] \\
+% %
+% ~ \\
+% %
+% \affaddr{\footnotemark[1]\,\,University of Maryland \,\,\,\,
+% \footnotemark[2]\,\,UC San Diego}
+% }
+
+% \affiliation{\institution{
+	% \footnotemark[1]University of Maryland \,\,\,\,
+	% \footnotemark[2]University of California, San Diego}
+% }
+
+\newcommand{\f}{\ensuremath{^\circ}F\xspace}
+\newcommand{\name}{ThunderPing\xspace}
+\newcommand{\planetlab}{PlanetLab\xspace}
+\newcommand{\etal}{et~al.\xspace}
+
+\newcommand{\UP}{\textbf{\small{UP}}\xspace}
+\newcommand{\DOWN}{\textbf{\small{DOWN}}\xspace}
+\newcommand{\HOSED}{\textbf{\small{HOSED}}\xspace}
+\newcommand{\UPnx}{\textbf{\small{UP}}}
+\newcommand{\DOWNnx}{\textbf{\small{DOWN}}}
+\newcommand{\HOSEDnx}{\textbf{\small{HOSED}}}
+
+\newcommand{\lastmile}{residential\xspace}
+\newcommand{\Lastmile}{Residential\xspace}
+
+% \newcommand{\UP}{\textbf{\small{UP}}\xspace}
+% \newcommand{\DOWN}{\textbf{\small{DOWN}}\xspace}
+% \newcommand{\HOSED}{\textbf{\small{HOSED}}\xspace}
+%\title{Whether the Internet weathers weather}
+\title{Correlated Failures}
+%\title{Rain Drops: How Weather Correlates with \\ Residential Internet Failures}
+
+\excludecomment{omitfigure}
+\begin{document}
+
+
+
+\maketitle
+
+\ninput{abstract}
+\ninput{intro}
+\ninput{method}
+\ninput{data}
+\ninput{related}
+\ninput{conclusions}
+
+\clearpage
+\bibliographystyle{abbrv}
+%\balance
+{%\small
+\bibliography{confs_short,master,net}
+}
+\label{lastpage}
+\end{document}

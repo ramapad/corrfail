@@ -1,0 +1,126 @@
+\documentclass{sig-alternate-10pt}
+%\documentclass[sigconf]{acmart}
+%
+%\fancyhf{} % Remove fancy page headers 
+%\fancyhead[C]{Anonymous submission \#XIX to ACM IMC 2018}
+%\fancyfoot[C]{\thepage}
+
+%\setcopyright{none} % No copyright notice required for submissions
+% \acmConference[Anonymous Submission to ACM CCS 2018]{ACM Conference on
+% Computer and Communications Security}{Due 8 May 2018}{Toronto, Canada}
+% \acmYear{2018}
+
+%\settopmatter{printacmref=false, printccs=true, printfolios=true} 
+
+% permit smallcaps in a bold passage to do smallcaps normal, rather than bold lowercase. - nspring
+%\DeclareFontShape{T1}{aer}{bx}{sc}{<->ssub * aer/m/sc}{}
+% \DeclareFontShape{OT1}{cmr}{bx}{sc}{<-> cmbx10}{}
+% \DeclareFontShape{OT1}{cmr}{bx}{sc}{<->ssub * aer/bx/sc}{}
+
+%\DeclareFontShape{OT1}{cmr}{bx}{sc}{<-> cmbcsc10}{}
+
+% Packages 
+\usepackage[letterpaper,textheight=9.25in,twocolumn,columnsep=0.33in,textwidth=7in,left=0.75in,right=0.75in]{geometry}
+\usepackage{comment}
+\usepackage{balance}
+\usepackage[hyphens]{url} 
+\usepackage{hyperref}
+\usepackage{color}
+% \usepackage{graphics}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage[labelformat=simple]{subcaption}
+%\usepackage[hyphens]{url}
+%\usepackage{listings}
+%\usepackage{multicol}
+%\usepackage[scaled]{helvet}
+%\usepackage{rotating}
+%\usepackage{subfigure}
+\usepackage{xspace}
+%\usepackage[table]{xcolor}
+\urlstyle{rm}
+\usepackage{algorithm}
+\usepackage{lastpage}
+\usepackage{leading}
+%\leading{12pt}
+\usepackage{pifont}
+
+\usepackage{epigraph}
+\setlength\epigraphwidth{\linewidth}
+
+% \newcommand{\todo}[1]{\ClassWarning{NOT READY TO SUBMIT}{There is something left todo} \textcolor{blue}{[TODO: #1 ]}}
+%\newcommand{\todo}[1]{}
+
+% from the latex faq
+% \def\ThisFile{master}
+\definecolor{todocolor}{rgb}{0.8,0.2,0.2}
+\newcounter{FileStack}
+\let\OrigInput\input
+\newcommand{\ninput}[1]{%
+  \stepcounter{FileStack}
+  \expandafter\let
+  \csname NameStack\theFileStack\endcsname
+  \ThisFile
+  \def\ThisFile{#1}%
+  \OrigInput{#1}%
+  \expandafter\let\expandafter
+  \ThisFile
+  \csname NameStack\theFileStack\endcsname
+  \addtocounter{FileStack}{-1}%
+}
+
+% what I do with stuff in the faq.
+\newwrite\todoout
+\immediate\openout\todoout=todo.lst
+\newcommand{\todo}[1]{%
+  \ClassWarning{NOT READY TO SUBMIT}{There is something left todo}%
+  \textsf{\color{todocolor} #1}\immediate\write\todoout{\ThisFile.tex:\the\inputlineno: TODO: #1}\typeout{\ThisFile.tex:\the\inputlineno: TODO: #1}} %\GenericWarning{#1}}
+
+\newcommand{\figdone}{} % \textcolor{blue}{FINAL}}
+
+\newcommand{\experiment}[1]{\textcolor{red}{Experiment: #1 }}
+\newcommand{\highlight}[1]{\textcolor{red}{#1 }}
+\newcommand{\pulled}[1]{\textcolor{red}{Pulled: #1 }}
+\newcommand{\goal}[1]{\textcolor{blue}{Goal: #1 }}
+\newcommand{\transition}[1]{\textcolor{purple}{Transition: #1 }}
+
+\newcommand{\rp}[1]{\textcolor{blue}{\emph{Rama: #1}}}
+
+\includecomment{ready}
+\excludecomment{notready}
+\begin{ready}
+  \newcommand{\rama}[1]{\typeout{\the\inputlineno: RAMA: #1}}
+  \newcommand{\neil}[1]{\typeout{\the\inputlineno: NEIL: #1}}
+\end{ready}
+\begin{notready}
+  \newcommand{\rama}[1]{{\color{cyan}{\it Rama - #1}}\typeout{\the\inputlineno: RAMA: #1}}
+  \newcommand{\neil}[1]{{\color{red}{\it Neil - #1}}\typeout{\the\inputlineno: NEIL: #1}}
+\end{notready}
+
+
+\newcommand{\blankgraph}[1]{\framebox[3.5in]{\textbf{#1} \raisebox{0pt}[2in]{}}}
+
+%\newtheorem{definition}{Definition}
+\newtheorem{invariant}{Invariant}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
+% \newenvironment{packed_itemize}{
+% \begin{list}{$\bullet$}
+% \setlength{\itemsep}{1pt}
+% \setlength{\parskip}{0pt}
+% \setlength{\parsep}{0pt}
+% \setlength{\headsep}{0pt}
+% \setlength{\topskip}{0pt}
+% \setlength{\topmargin}{0pt}
+% \setlength{\leftmargin}{.45cm}
+% \setlength{\topsep}{0pt}
+% \setlength{\partopsep}{0pt}
+% }{\end{list}}
+\newenvironment{widelist}{
+\begin{list}{$\bullet$}{
+\setlength{\leftmargin}{.45cm}
+\setlength{\itemsep}{.00cm}
+\setlength{\parsep}{0.1cm}
+\setlength{\topsep}{.1cm}
+}
+}{\end{list}}

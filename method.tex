@@ -1,0 +1,42 @@
+\section{Detecting correlated failures}
+\label{sec:method}
+
+Simultaneous outages of addresses that are related by geography or
+network topology could share a common cause. However, when the number
+of observed addresses ($N$) is large, there is some chance that
+multiple addresses fail simultaneously independently (by random chance).
+
+In this section, we describe how we use Binomial testing to find failure events that
+are highly unlikely to have happened independently. Suppose $P_o$ is
+the probability that an address fails in a given window of time. Given
+$N$ addresses, the Binomial distribution gives the probability that
+$K$ of them fail \emph{independently} as:
+
+\[
+{N\choose k} \cdot P_o^k(1-P_o)^{N-k}
+\]
+
+For a given $N$, we calculate $O_{min}$, the minimum number of
+outages that we need to have observed, such that the probability of
+$O_{min}$ or more failures occurring independently is tiny (say less
+than 1\%). If we observed $O_{min}$ or more outages, we reason that these failures were \emph{not} independent
+and that there is likely a common underlying cause behind the observed
+outages.
+
+Next, we investigate $O_{min}$ values for different combinations of
+$N$ and $P_o$ from the Thunderping dataset.
+
+% Depending upon 
+% Since outages are usually
+% rare events, $P_o$ in a small window of time (like minutes) is
+% low. Consequently, even a relatively small number of failures
+
+
+% When that probability is very, very low then we can argue that those X addresses must have failed in a dependent manner, likely due to a common cause.
+
+% Say that there is some probability, p that an outage can occur in any minute. Probability that ‘k’ outages happen independently when we ping ‘n’ addresses is given by the Binomial distribution:
+% nCk*(p)^k * (1-p)^n-k
+
+% The main problem is arriving at the probability that an outage occur in any minute. Currently, I divide #outages/total-up-minutes for some aggregate of addresses (say all Comcast addresses in a given US state). Perhaps I can do better. 
+
+% After finding correlated failures, my goal is to make some progress towards the potential cause of each correlated failure. Failures where multiple addresses from multiple ISPs are affected would be consistent with a power outage, for example.
