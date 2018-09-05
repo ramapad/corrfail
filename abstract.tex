@@ -1,18 +1,21 @@
 \begin{abstract}
 
-Even in a world that increasingly relies upon the Internet, Internet failure
-events, often affecting multiple users, are known to occur. Characterizing, and quantifying
-such events is essential to understanding and improving Internet reliability.
+Even in a world that increasingly relies upon the Internet, Internet
+failure events, often affecting multiple users, are
+known to occur. Characterizing, and quantifying such events is
+essential to understanding and improving Internet reliability.
 
 In this paper, we develop and evaluate an approach to detect Internet
-failure events that affect multiple users using measurements gathered with the
-Thunderping technique. Thunderping detects an outage for an IP address
-it is pinging when that address ceases to respond to its probes. Our
-insight is that simultaneous outages of multiple ``related'' addresses
-is indicative of an Internet failure event. Using a novel approach
-based upon Binomial hypothesis testing, we detect instances of
-simultaneous outages that are unlikely to have happened by random
-chance and flag these as failure events.
+failure events that affect multiple users simultaneously using
+measurements gathered with the Thunderping technique. Thunderping
+pings addresses across U.S. countries and ISPs with severe
+weather alerts. It detects a dropout event when an IP address that is responding to pings 
+ceases to respond. Our insight is that simultaneous
+dropouts of multiple addresses, that are related to each other
+by geography or ISP, is indicative of a larger
+event. Using a novel approach based upon Binomial hypothesis testing,
+we detect instances of events that are unlikely to have
+happened by random chance and flag these as candidate Internet failure events.
 
 We characterize Internet failure events and present results
 that challenge conventional wisdom on how such outages affect Internet

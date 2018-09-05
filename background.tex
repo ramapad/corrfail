@@ -1,0 +1,108 @@
+\section{Background and related work}
+\label{sec:bg}
+
+\subsection{Background: detecting Internet outages using active probes}
+% \subsection{Dropouts are supersets of outages and reassignment}
+
+An IP address that is being pinged can be either responsive or
+unresponsive. Some addresses never respond to ICMP packets, either
+because the address hasn't been assigned to a host or due to ICMP
+filtering~\cite{v4-census-imc16} along the path to the host. For such always-unresponsive
+addresses, inferring the assigned host's Internet connectivty with ICMP packets is impossible.
+
+For an address that responds to pings, it is possible to use ping
+responses to reason about the connectivity of a host to which the address has been
+assigned. A ping response from an address indicates that the
+host's Internet connection is working. If a previously
+responsive address ceases to respond to pings, this could indicate
+that the host's Internet connection is no longer working. Recent work
+has shown that such an event can also occur as a result of \emph{dynamic
+address reassignment}~\cite{addrchange-imc}, when the host's ISP
+assigns it a new address and if the old address (the one being pinged)
+is no loner assigned to any host, or is assigned to a host that is
+configured to not respond to pings.
+
+We define a dropout to be the event where a pinged address \emph{transitions}
+from a state where it is responding to probes to a state where it
+ceases to respond. Dropouts are therefore supersets of both outages
+and dynamic reassignment.
+
+\subsection{Related work}
+
+Large connectivity problems occurring at the Internet's core have
+received attention from the community. 
+
+At the edge, Internet outages have been studied either by deploying
+hardware/software at customer equipment or by conducting active
+probing measurement campaigns towards edge hosts from machines under
+researcher control. While the former approach allows the detailed study of
+a few hosts, the latter enables broader study of more hosts albeit at
+lesser detail.
+
+\subsubsection{Trinocular detects failures of /24 address blocks}
+
+Trinocular pings addresses in ~4M /24 address blocks and
+uses the responses to detect Internet outages affecting entire blocks. Using historical
+data from the ISI census~\cite{}, it models the responsiveness of
+blocks and finds subsets of addresses within each block that are
+likely to respond to pings. The system pings a few of these addresses
+from each block at random and probes them in 11-minute
+rounds. Trinocular then employs Bayesian inference to reason about
+responses from blocks. When a block's responsiveness is lower than
+expected, Trinocular probes the block at a faster rate and eventually
+detects an outage when the follow-up probes also indicate the block's
+lack of Internet connectivity.
+
+The key difference of this work from Trinocular is that we do not assume
+that correlated failures span entire /24-address blocks; instead, we
+look for correlated failures of addresses related by geography and
+ISP. While we share Trinocular's intuiton that dependent events will
+affect related addresses, Trinocular's notion of relatedness is solely
+that of belonging to the same /24. With the IPv4 address space
+breaking up, we hypothesized that addresses in disparate /24s may be
+affected by a correlated failure event. Further, a power outage may
+affect a few addresses but from several different ISPs.
+
+\subsection{Detecting dependent events using Thunderping}
+
+To evaluate how , we use data collected with the
+Thunderping~\cite{schulman-imc11} technique, since Thunderping pings
+sampled addresses from multiple ISPs in geographic areas in the United
+States. Originally designed to evaluate how weather affects Internet
+outages, the system uses Planetlab vantage points to ping 100 IPv4
+addresses from multiple ISPs in U.S. counties with active
+weather alerts. Each address is pinged from multiple Planetlab vantage
+points (at least 3) every 11 minutes, and addresses in a county are
+pinged six hours before, during, and after a weather alert for that
+county. 
+
+We analyze ping responses to detect dropout events for each probed
+address. When an address that is responsive stops responding to pings
+from all vantage points that are currently probing it, we detect a
+dropout event for that address. Since we probe once every 11-minutes
+from each vantage point, 
+once a vantage point lists an address as unresponsive, we wait for 11 minutes and ensure that
+all vantage points that had pinged the address during this period also
+confirm its unresponsiveness. Once confirmed, we detect a dropout and
+adjust its start-time of the dropout to be the time at which the first
+vantage point observed the address to be unresponsive. 
+
+We continue to probe an address after it has become unresponsive,
+allowing us to estimate how long the unresponsive period lasted.
+
+Address why we need Binomial instead of Bayesian. Such a large
+aggregate that Bayesian would only allow entire aggregate
+failures. But Binomial uses correlation in time to detect dropouts
+that happen close together in time. So it's all about the time. And
+even with the coarse granularity of Thunderping, dropouts are rare
+enough that it allows detection of correlated failures often.
+
+Our position shoud be a motivation for a broader scheme. Need to ping
+more addresses. It's worth it. That should be the goal of this paper.
+
+When using the Thunderping technique to detect Internet outages affecting
+multiple users, there is another challenge: the Thunderping technique
+will include events where users voluntarily power down their home
+Internet equipment. Since Thunderping probes individual IP addresses, if a user
+powers down their home router, the address assigned to the router will
+cease to respond to pings and this will be detected as a dropout event.

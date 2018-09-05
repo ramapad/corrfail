@@ -1,30 +1,125 @@
-\section{Detecting correlated failures}
+\section{Detecting correlated dropouts}
 \label{sec:method}
 
-Simultaneous outages of addresses that are related by geography or
-network topology could share a common cause. However, when the number
-of observed addresses ($N$) is large, there is some chance that
-multiple addresses fail simultaneously independently (by random chance).
+When several pinged addresses experience a dropout at the same time,
+there may be a common underlying cause. Restated: simultaneous dropouts
+could be \emph{dependent} upon each other.
 
-In this section, we describe how we use Binomial testing to find failure events that
-are highly unlikely to have happened independently. Suppose $P_o$ is
-the probability that an address fails in a given window of time. Given
-$N$ addresses, the Binomial distribution gives the probability that
-$K$ of them fail \emph{independently} as:
+Dependent events are likely to affect addresses that are related to
+each other by geography or ISP. We call groups of related addresses, such as all addresses within the
+same U.S. state or ISP, \emph{address aggregates}.
+
+\subsection{Finding dependent events in an address aggregate}
+
+When the number of observed addresses ($N$) within an address
+aggregate is large, there is some chance that multiple addresses dropout
+simultaneously independently (by random chance).
+
+In this section, we describe how we use Binomial hypothesis testing to find events that
+are highly unlikely to have occurred independently. Suppose $P_d$ is
+the probability that an address from the aggregate drops out in a given window of time. Given
+$N$ addresses that can potentially dropout, the Binomial distribution gives the probability that
+$K$ of them dropout \emph{independently} as:
 
 \[
-{N\choose k} \cdot P_o^k(1-P_o)^{N-k}
+{N\choose k} \cdot P_d^k(1-P_d)^{N-k}
 \]
 
-For a given $N$, we calculate $O_{min}$, the minimum number of
-outages that we need to have observed, such that the probability of
-$O_{min}$ or more failures occurring independently is tiny (say less
-than 1\%). If we observed $O_{min}$ or more outages, we reason that these failures were \emph{not} independent
-and that there is likely a common underlying cause behind the observed
-outages.
+Given $N$ and $P_d$, it is possible to calculate $D_{min}$, the minimum number of
+dropouts that need to occur, such that the probability of
+$D_{min}$ or more dropouts occurring independently is small (less
+than 1\%). If we observe $D_{min}$ or more outages, we reason that these dropouts are \emph{not} independent
+and that there is likely a common underlying cause behind them.
 
-Next, we investigate $O_{min}$ values for different combinations of
-$N$ and $P_o$ from the Thunderping dataset.
+\subsection{Analyzing $D_{min}$}
+
+Next, we investigate $D_{min}$ values for different combinations of
+$N$ and $P_d$ from the Thunderping dataset.
+
+We calculate the probability that an address from an aggregate drops
+out in a given window of time, $P_d$, using the Thunderping
+dataset as follows:
+
+\begin{equation}
+P_d= \frac{total dropouts}{total time bins}
+\label{eq:p_dropout}
+\end{equation}
+
+We use 11 minute long time bins since Thunderping pings an address
+once every 11 minutes from each vantage point. Since dropouts are
+detected when every vantage point confirms that its pings have become
+unresponsive, a dropout may take up to 11 minutes to get detected. For
+each aggregate, the formula calculates the probability that an address
+drops out in a 11 minute time bin.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/dropout_rate_660_cdf}
+\caption{
+\label{fig:p_dropout}
+Distribution of $P_d$ for different address aggregates. }
+\end{figure}
+
+Figure~\ref{fig:p_dropout} shows how $P_d$ is distributed across
+different aggregates. The asn and state-asn curves show large
+variation: addresses in some of these aggregates dropout only once every
+year whereas in other aggregates, they dropout more often than once per
+day.\footnote{Since dropouts are a superset of outages and dynamic
+  reassignment, frequent dropouts are not necessarily indicative of
+  poor Internet connectivity.} However, when considering entire U.S. states (which contain
+several ISPs), $P_d$ exhibits lesser variation. 
+
+$D_{min}$ values depend not only upon $P_d$, but also upon the number
+of addresses ($N$) that can potentially fail in an aggregate in a
+timebin. 
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/upips_per_timebin_660_jan17todec17_cdf}
+\caption{
+\label{fig:upips_per_timebin}
+Distribution of all addresses pinged by Thunderping that can potentially fail in each 11 minute
+time bin}
+\end{figure}
+
+Figure~\ref{fig:upips_per_timebin} shows the distribution of addresses
+pinged by Thunderping in each 11 minute time bin. The median number is
+around 50K addresses across all U.S. states and ISPs. Since multiple
+weather events tend to be active at a time, the number of addresses
+within any aggregate will be strictly smaller. 
+
+For different values of $N$ and $p_d$, we list $D_{min}$ values in
+Table~\ref{tbl:binomial_thresh}. 
+
+\begin{table}[th]
+%  \scriptsize
+  \centering
+  \hspace{-0.04in}
+  \begin{tabular}{c|c|c|c|c|}
+$N$ & \multicolumn{4}{c|}{Probability of dropout} \\
+    & \textbf{1/hour} & \textbf{1/day} & \textbf{1/week} &
+    \textbf{1/month} \\
+    \hline
+10 & 6 & 2 & 2 & 1\\
+50 & 17 & 3 & 2 & 2\\
+100 & 29 & 4 & 2 & 2\\
+500 & 113 & 10 & 4 & 2\\
+1000 & 213 & 16 & 5 & 3\\
+5000 & 982 & 54 & 13 & 5\\
+10000 & 1925 & 98 & 20 & 8\\
+    \end{tabular}
+  \caption{\label{tbl:binomial_thresh} $D_{min}$ values
+    for different
+    values of number of addresses that can potentially fail ($N$) and
+    the probability of dropout ($p_d$). }
+\end{table}
+
+These results show that the approach will work for some ASNs (i.e., be
+sensitive) but not for others who have such high $p_d$ that we would need to see a very large number of dropouts to suggest that something happened.
+
+
+% The minimum number of dropouts
+%     such that their likelihood of occurrence is small 
 
 % Depending upon 
 % Since outages are usually
@@ -40,3 +135,6 @@ $N$ and $P_o$ from the Thunderping dataset.
 % The main problem is arriving at the probability that an outage occur in any minute. Currently, I divide #outages/total-up-minutes for some aggregate of addresses (say all Comcast addresses in a given US state). Perhaps I can do better. 
 
 % After finding correlated failures, my goal is to make some progress towards the potential cause of each correlated failure. Failures where multiple addresses from multiple ISPs are affected would be consistent with a power outage, for example.
+
+\subsection{Correlated failures span /24s}
+
