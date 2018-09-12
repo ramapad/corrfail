@@ -30,14 +30,38 @@ and dynamic reassignment.
 \subsection{Related work}
 
 Large connectivity problems occurring at the Internet's core have
-received attention from the community. 
+received attention from the community~\cite{censorship-outages, trinocular, hubble, paxson-e2e,
+  hubble, netdiagnoser, lifeguard,
+  poiroot, phillipa-outages-mailing-list,
+  california-fault-lines, delayed-routing-convergence, consensus-routing,
+  routing-e2e-path-perf, voip-bgp-convergence}. 
 
-At the edge, Internet outages have been studied either by deploying
+However, at the edge, Internet outages have been studied either by deploying
 hardware/software at customer equipment or by conducting active
 probing measurement campaigns towards edge hosts from machines under
 researcher control. While the former approach allows the detailed study of
 a few hosts, the latter enables broader study of more hosts albeit at
-lesser detail.
+lesser detail. 
+
+Disco~\cite{disco} uses Kleinberg's burst detection to detect
+events where many RIPE Atlas probes disconnect from
+their infrastructure in a correlated manner.
+
+The ``Trinocular'' tool detects outages affecting /24 address
+blocks~\cite{trinocular}.  It assumes that addresses in a /24 share fate.
+The Zmap tool was used to study outages that occurred during Hurricane Sandy~\cite{durumeric2013zmap}.
+Planetseer~\cite{planetseer} uses active probes.
+Hubble~\cite{hubble} also uses active probes.
+
+A complementary technique uses large passive data collection to detect
+Internet outages at the edge. Dainotti et~al.~\cite{dainotti-imc11} observe Internet Background
+Radiation traffic sent to IPv4 darknets to detect outages affecting
+entire countries. 
+
+FACT~\cite{fact-flowbased-connectivity} seems related.
+
+
+
 
 \subsubsection{Trinocular detects failures of /24 address blocks}
 
@@ -65,7 +89,7 @@ affect a few addresses but from several different ISPs.
 
 \subsection{Detecting dependent events using Thunderping}
 
-To evaluate how , we use data collected with the
+To evaluate if outages indeed span an entire /24, we use data collected with the
 Thunderping~\cite{schulman-imc11} technique, since Thunderping pings
 sampled addresses from multiple ISPs in geographic areas in the United
 States. Originally designed to evaluate how weather affects Internet
@@ -90,19 +114,19 @@ vantage point observed the address to be unresponsive.
 We continue to probe an address after it has become unresponsive,
 allowing us to estimate how long the unresponsive period lasted.
 
-Address why we need Binomial instead of Bayesian. Such a large
-aggregate that Bayesian would only allow entire aggregate
-failures. But Binomial uses correlation in time to detect dropouts
-that happen close together in time. So it's all about the time. And
-even with the coarse granularity of Thunderping, dropouts are rare
-enough that it allows detection of correlated failures often.
+% Address why we need Binomial instead of Bayesian. Such a large
+% aggregate that Bayesian would only allow entire aggregate
+% failures. But Binomial uses correlation in time to detect dropouts
+% that happen close together in time. So it's all about the time. And
+% even with the coarse granularity of Thunderping, dropouts are rare
+% enough that it allows detection of correlated failures often.
 
-Our position shoud be a motivation for a broader scheme. Need to ping
-more addresses. It's worth it. That should be the goal of this paper.
+% Our position shoud be a motivation for a broader scheme. Need to ping
+% more addresses. It's worth it. That should be the goal of this paper.
 
-When using the Thunderping technique to detect Internet outages affecting
-multiple users, there is another challenge: the Thunderping technique
-will include events where users voluntarily power down their home
-Internet equipment. Since Thunderping probes individual IP addresses, if a user
-powers down their home router, the address assigned to the router will
-cease to respond to pings and this will be detected as a dropout event.
+% When using the Thunderping technique to detect Internet outages affecting
+% multiple users, there is another challenge: the Thunderping technique
+% will include events where users voluntarily power down their home
+% Internet equipment. Since Thunderping probes individual IP addresses, if a user
+% powers down their home router, the address assigned to the router will
+% cease to respond to pings and this will be detected as a dropout event.
